@@ -1,6 +1,5 @@
-﻿using HomeRun.RatingService.Entities;
-
-namespace HomeRun.RatingService.Services
+﻿
+namespace HomeRun.NotificationService
 {
     public interface INotificationService
     {

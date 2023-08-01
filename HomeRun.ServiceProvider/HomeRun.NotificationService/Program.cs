@@ -1,3 +1,7 @@
+using HomeRun.NotificationService;
+using HomeRun.Shared;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +11,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+
+builder.Services.AddDbContext<NotificationDbContext>(context => context.UseNpgsql(builder.Configuration.GetConnectionString("WebApiConnection")));
+builder.Services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+builder.Services.AddSingleton<IConfiguration>(x => builder.Configuration);
+
+
+
+WebApplication app = builder.Build();
+
+
+using IServiceScope scope = app.Services.CreateScope();
+await using NotificationDbContext dbContext = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
+await dbContext.Database.MigrateAsync();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
