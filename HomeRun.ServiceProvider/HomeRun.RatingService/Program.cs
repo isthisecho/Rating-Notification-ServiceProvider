@@ -1,37 +1,25 @@
-using Microsoft.EntityFrameworkCore;
 using HomeRun.RatingService;
-using HomeRun.Shared;
-using AutoMapper;
-using HomeRun.RatingService.Mapper;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
+
+builder.Host.UseSerilog((context,configuration) =>  { configuration.ReadFrom.Configuration(context.Configuration); });
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<RatingDbContext>(context => context.UseNpgsql(builder.Configuration.GetConnectionString("WebApiConnection")));
 
-IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
-builder.Services.AddSingleton(mapper);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-
-builder.Services.AddScoped<DbContext, RatingDbContext>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
-builder.Services.AddScoped<IRatingService, RatingService>();
-builder.Services.AddSingleton<IConfiguration>(x => builder.Configuration);
+builder.Services.AddContexts(builder.Configuration);    // Extension method for wrapping all relevant DI's.
+builder.Services.AddAutoMapper                   ();    // Extension method for wrapping AutoMapper configuration.
 
 
 WebApplication app = builder.Build();
 
 
-using IServiceScope scope = app.Services.CreateScope();
-await using RatingDbContext dbContext = scope.ServiceProvider.GetRequiredService<RatingDbContext>();
-await dbContext.Database.MigrateAsync();
+app.ApplyPendingMigrations(builder.Services); // Extension method for DB Migration.
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -40,6 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

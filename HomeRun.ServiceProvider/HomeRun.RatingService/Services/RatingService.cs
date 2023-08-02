@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HomeRun.Shared;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HomeRun.RatingService
 {
@@ -8,22 +9,18 @@ namespace HomeRun.RatingService
     {
         private readonly  IRepository<Rating> _ratingRepository;
         private readonly IMapper _mapper;
-
-        public RatingService(IRepository<Rating> ratingRepository, IMapper mapper)
+        private readonly ILogger _logger;
+        public RatingService(IRepository<Rating> ratingRepository, IMapper mapper, ILogger<Rating> logger)
         {
             _ratingRepository = ratingRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<double> GetAverageRating(int serviceProviderId)
         {
             IEnumerable<Rating> ratings= await  _ratingRepository.GetAll();
             return ratings.Select(x=> x.RatingValue).Average();
-        }
-
-        public Task NotifyNewRating(NotificationDTO rating)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<Rating> SubmitRating(RatingDTO rating)

@@ -16,22 +16,22 @@ namespace HomeRun.RatingService
 
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<ServiceProviderX>().HasData(new ServiceProviderX
+            modelBuilder.Entity<ServiceProvider>().HasData(new ServiceProvider
             {
                 Id = 1,
-                Name= "ProviderA",
+                Name= "Provider A",
             });
 
-            modelBuilder.Entity<ServiceProviderX>().HasData(new ServiceProviderX
+            modelBuilder.Entity<ServiceProvider>().HasData(new ServiceProvider
             {
                 Id = 2,
-                Name = "ProviderB",
+                Name = "Provider B",
             });
 
-            modelBuilder.Entity<ServiceProviderX>().HasData(new ServiceProviderX
+            modelBuilder.Entity<ServiceProvider>().HasData(new ServiceProvider
             {
                 Id = 3,
-                Name = "ProviderC",
+                Name = "Provider C",
             });
 
 

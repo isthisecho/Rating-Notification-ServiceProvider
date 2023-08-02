@@ -1,25 +1,26 @@
-﻿using HomeRun.Shared;
-
+﻿
 namespace HomeRun.NotificationService
 {
     public class NotificationService : INotificationService
     {
-
-        private readonly IRepository<Notification> _notificationRepository;
-
-        public NotificationService(IRepository<Notification> notificationRepository)
+        private readonly List<Notification> _notifications = new();
+        private readonly ILogger _logger;
+        public NotificationService(ILogger logger)
         {
-            _notificationRepository = notificationRepository;
+            _logger = logger;
         }
 
-        public Task<IEnumerable<Notification>?> GetNewNotifications()
+        public  IEnumerable<Notification> GetAllNewNotifications()
         {
-            throw new NotImplementedException();
+            List<Notification> notificationsToReturn = new(_notifications);
+            _notifications.Clear(); 
+
+            return notificationsToReturn;
         }
 
-        public Task<Notification> PostNotification(Notification notification)
+        public void AddNotification(Notification notification)
         {
-            throw new NotImplementedException();
+            _notifications.Add(notification);
         }
     }
 }

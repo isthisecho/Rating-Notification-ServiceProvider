@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HomeRun.Shared.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
 namespace HomeRun.Shared
@@ -7,63 +9,53 @@ namespace HomeRun.Shared
     {
         private readonly DbContext _context;
         private readonly DbSet<EntityType> _entities;
-
-        public BaseRepository(DbContext context)
+        private readonly  ILogger<BaseRepository<EntityType>> _logger;  
+        public BaseRepository(DbContext context , ILogger<BaseRepository<EntityType>> logger)
         {
             _context = context;
             _entities = context.Set<EntityType>();
+            _logger = logger;
         }
 
         public async Task<EntityType?> Create(EntityType? entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-            
-            await _entities.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            if(entity == null) throw new ArgumentNullException(nameof(entity));
+
+            try
+            {
+                await _entities.AddAsync(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Entity {entity} can not be added | {ex.Message}");
+                throw new HomeRunException($"Entity {entity} can not be added | {ex.Message} ");
+            }
 
             return entity;
         }
-
-        public async Task<IEnumerable<EntityType>?> CreateMany(IEnumerable<EntityType> entities)
+        public async Task Delete(int id)
         {
-
-           await _entities.AddRangeAsync(entities);
-           return entities;
-
-        }
-
-        public async Task Delete(Guid id)
-        {
-
             EntityType? entity = await _entities.FindAsync(id);
 
-            if(entity == null)
-                throw new ArgumentException(nameof(entity));
+            if (entity == null)
+                throw new HomeRunException("Item can not be found and deleted.");
+
              _entities.Remove(entity);
 
             await _context.SaveChangesAsync();
-
-
         }
 
-        public async Task DeleteMany(IEnumerable<EntityType> entities)
+        public async Task<EntityType?> GetById(int id)
         {
-            _entities.RemoveRange(entities);
-            await _context.SaveChangesAsync();
-        }
+            EntityType? values = await _entities.FindAsync(id);
 
-        public async Task<int> DeleteMany(Expression<Func<EntityType, bool>> condition)
-        {
-            List<EntityType> entitiesToDelete = await _entities.Where(condition).ToListAsync();
-            _entities.RemoveRange(entitiesToDelete);
+            if (values is not null)
+                return values;
 
-            return await _context.SaveChangesAsync();
-        }
+            else
+                throw new HomeRunException($"Values is null with id : {id}");
 
-        public async Task<EntityType?> Get(Guid id)
-        {
-           return await _entities.FindAsync(id);
         }
 
         public async Task<EntityType?> Get(EntityType? entity)
@@ -76,20 +68,30 @@ namespace HomeRun.Shared
             return await _entities.Where(predicate).ToListAsync();
         }
 
-
         public async Task<IEnumerable<EntityType>> GetAll()
         {
             return await _entities.ToListAsync();   
         }
 
-        public async Task<EntityType?> Update(Guid id, EntityType? entity)
+        public async Task<EntityType?> Update(int id, EntityType? entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+
             EntityType? existingEntity = await _entities.FindAsync(id);
 
-            if (existingEntity != null && entity != null)
+            if (existingEntity is null)
+               throw new HomeRunException("Entity can not be found with id :{}");
+
+            try
             {
-                 _entities.Entry(existingEntity).CurrentValues.SetValues(entity);
-                 await _context.SaveChangesAsync();
+               _entities.Entry(existingEntity).CurrentValues.SetValues(entity);
+               await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+               throw new Exception($"Update operation failed: {ex.Message}");
             }
 
             return existingEntity;

@@ -9,13 +9,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeRun.RatingService.Migrations
 {
     /// <inheritdoc />
-    public partial class initialCreate : Migration
+    public partial class ratingDbMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ServiceProviderX",
+                name: "ServiceProvider",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -25,7 +25,7 @@ namespace HomeRun.RatingService.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ServiceProviderX", x => x.Id);
+                    table.PrimaryKey("PK_ServiceProvider", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -34,7 +34,7 @@ namespace HomeRun.RatingService.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ServiceProviderXId = table.Column<int>(type: "integer", nullable: false),
+                    ServiceProviderId = table.Column<int>(type: "integer", nullable: false),
                     RatingValue = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -42,27 +42,27 @@ namespace HomeRun.RatingService.Migrations
                 {
                     table.PrimaryKey("PK_Ratings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Ratings_ServiceProviderX_ServiceProviderXId",
-                        column: x => x.ServiceProviderXId,
-                        principalTable: "ServiceProviderX",
+                        name: "FK_Ratings_ServiceProvider_ServiceProviderId",
+                        column: x => x.ServiceProviderId,
+                        principalTable: "ServiceProvider",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
-                table: "ServiceProviderX",
+                table: "ServiceProvider",
                 columns: new[] { "Id", "CreatedAt", "Name" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 8, 1, 15, 41, 57, 421, DateTimeKind.Utc).AddTicks(5397), "ProviderA" },
-                    { 2, new DateTime(2023, 8, 1, 15, 41, 57, 421, DateTimeKind.Utc).AddTicks(5459), "ProviderB" },
-                    { 3, new DateTime(2023, 8, 1, 15, 41, 57, 421, DateTimeKind.Utc).AddTicks(5470), "ProviderC" }
+                    { 1, new DateTime(2023, 8, 2, 8, 12, 47, 689, DateTimeKind.Utc).AddTicks(371), "Provider A" },
+                    { 2, new DateTime(2023, 8, 2, 8, 12, 47, 689, DateTimeKind.Utc).AddTicks(411), "Provider B" },
+                    { 3, new DateTime(2023, 8, 2, 8, 12, 47, 689, DateTimeKind.Utc).AddTicks(421), "Provider C" }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ratings_ServiceProviderXId",
+                name: "IX_Ratings_ServiceProviderId",
                 table: "Ratings",
-                column: "ServiceProviderXId");
+                column: "ServiceProviderId");
         }
 
         /// <inheritdoc />
@@ -72,7 +72,7 @@ namespace HomeRun.RatingService.Migrations
                 name: "Ratings");
 
             migrationBuilder.DropTable(
-                name: "ServiceProviderX");
+                name: "ServiceProvider");
         }
     }
 }

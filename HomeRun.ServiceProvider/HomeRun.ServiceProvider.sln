@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeRun.RatingService", "Ho
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeRun.NotificationService", "HomeRun.NotificationService\HomeRun.NotificationService.csproj", "{D39AA97D-C675-491E-963B-3E064C71E81C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeRun.Shared", "HomeRun.Shared\HomeRun.Shared.csproj", "{EB4FE399-78D0-4A2A-BF96-D49EC67D7240}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeRun.Shared", "HomeRun.Shared\HomeRun.Shared.csproj", "{EB4FE399-78D0-4A2A-BF96-D49EC67D7240}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

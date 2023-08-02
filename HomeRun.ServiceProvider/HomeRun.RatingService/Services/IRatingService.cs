@@ -5,6 +5,5 @@ namespace HomeRun.RatingService
     {
         Task<Rating> SubmitRating       (RatingDTO rating);
         Task<double> GetAverageRating   (int serviceProviderId);
-        Task         NotifyNewRating    (NotificationDTO rating);
     }
 }
