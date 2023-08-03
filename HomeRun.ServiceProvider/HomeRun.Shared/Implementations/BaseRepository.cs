@@ -9,8 +9,9 @@ namespace HomeRun.Shared
     {
         private readonly DbContext _context;
         private readonly DbSet<EntityType> _entities;
-        private readonly  ILogger<BaseRepository<EntityType>> _logger;  
-        public BaseRepository(DbContext context , ILogger<BaseRepository<EntityType>> logger)
+        private readonly ILogger<BaseRepository<EntityType>> _logger;
+
+        public BaseRepository(DbContext context, ILogger<BaseRepository<EntityType>> logger)
         {
             _context = context;
             _entities = context.Set<EntityType>();
@@ -19,31 +20,47 @@ namespace HomeRun.Shared
 
         public async Task<EntityType?> Create(EntityType? entity)
         {
-            if(entity == null) throw new ArgumentNullException(nameof(entity));
+            if (entity == null)
+            {
+                _logger.LogError("Entity cannot be null. Create operation failed.");
+                throw new ArgumentNullException(nameof(entity));
+            }
 
             try
             {
                 await _entities.AddAsync(entity);
                 await _context.SaveChangesAsync();
+
+                return entity;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Entity {entity} can not be added | {ex.Message}");
-                throw new HomeRunException($"Entity {entity} can not be added | {ex.Message} ");
+                _logger.LogError(ex, "Entity {@entity} could not be added", entity);
+                throw;
             }
-
-            return entity;
         }
+
         public async Task Delete(int id)
         {
             EntityType? entity = await _entities.FindAsync(id);
 
             if (entity == null)
-                throw new HomeRunException("Item can not be found and deleted.");
+            {
+                _logger.LogError("Item cannot be found and deleted. Item ID: {id}", id);
+                throw new HomeRunException("Item cannot be found and deleted.");
+            }
 
-             _entities.Remove(entity);
+            try
+            {
+                _entities.Remove(entity);
+                await _context.SaveChangesAsync();
 
-            await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Delete operation failed for entity with ID {id}", id);
+                throw;
+            }
         }
 
         public async Task<EntityType?> GetById(int id)
@@ -52,10 +69,11 @@ namespace HomeRun.Shared
 
             if (values is not null)
                 return values;
-
             else
-                throw new HomeRunException($"Values is null with id : {id}");
-
+            {
+                _logger.LogWarning("Values is null with ID {id}", id);
+                throw new HomeRunException($"Values is null with ID: {id}");
+            }
         }
 
         public async Task<EntityType?> Get(EntityType? entity)
@@ -70,28 +88,36 @@ namespace HomeRun.Shared
 
         public async Task<IEnumerable<EntityType>> GetAll()
         {
-            return await _entities.ToListAsync();   
+            return await _entities.ToListAsync();
         }
 
         public async Task<EntityType?> Update(int id, EntityType? entity)
         {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
-
+            if (entity == null)
+            {
+                _logger.LogError("Entity cannot be null. Update operation failed.");
+                throw new ArgumentNullException(nameof(entity));
+            }
 
             EntityType? existingEntity = await _entities.FindAsync(id);
 
             if (existingEntity is null)
-               throw new HomeRunException("Entity can not be found with id :{}");
+            {
+                _logger.LogWarning("Entity cannot be found with ID {id}", id);
+                throw new HomeRunException($"Entity cannot be found with ID: {id}");
+            }
 
             try
             {
-               _entities.Entry(existingEntity).CurrentValues.SetValues(entity);
-               await _context.SaveChangesAsync();
+                _entities.Entry(existingEntity).CurrentValues.SetValues(entity);
+                await _context.SaveChangesAsync();
 
+                _logger.LogInformation("Entity with ID {id} updated successfully.", id);
             }
             catch (Exception ex)
             {
-               throw new Exception($"Update operation failed: {ex.Message}");
+                _logger.LogError(ex, "Update operation failed for entity with ID {id}", id);
+                throw;
             }
 
             return existingEntity;

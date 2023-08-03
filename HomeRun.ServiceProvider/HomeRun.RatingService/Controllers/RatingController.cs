@@ -25,30 +25,39 @@ namespace HomeRun.RatingService
         {
             CommonResponse response = new CommonResponse();
 
-            Rating? _rating = await _ratingService.SubmitRating(rating);
-
-            if(_rating is not null)
+            try
             {
-                response.IsSuccess = true;
+                Rating? _rating = await _ratingService.SubmitRating(rating);
+
+                if (_rating is not null)
+                {
+                    response.IsSuccess = true;
+                    response.Result = _rating;
+                    response.Message = "Rating created successfully";
+
+                    // Rating Value logs.
+                    _logger.LogInformation("Rating created successfully: {@_rating}", _rating);
+
+                    // Send rating to MQ.
+                    _messageProducer.SendingMessage(_rating);
+
+                    return Ok(response);
+                }
+
+                response.IsSuccess = false;
                 response.Result = _rating;
-                response.Message = $"Rating created successfully : {response.Result}";
+                response.Message = $"Rating could not be added";
 
-                _messageProducer.SendingMessage(_rating);
-                _logger.LogInformation(message: response.Message);
-
-                return Ok(response);
+                return BadRequest(response);
             }
-            
-            response.IsSuccess = false;
-            response.Result = _rating;
-            response.Message = $"Rating can not be added";
-            _logger.LogError(
-                "Request Failure BURAYA BAKKKK {@RequestName}, {@Error}, {@DateTimeUTC}"
-                ,typeof(string),
-                "asda",
-                DateTime.UtcNow
-                );
-            return BadRequest(response);
+            catch (Exception ex)
+            {
+                //Log in case of errors
+                _logger.LogError("An error occurred while submitting the rating: {ex}", ex);
+
+                //Throwing exception for carrying errors to the upper layers. 
+                throw;
+            }
         }
 
         [HttpGet("GetAvgRating", Name = "GetAverageRating")]
@@ -56,22 +65,35 @@ namespace HomeRun.RatingService
         {
             CommonResponse response = new CommonResponse();
 
-            double value = await _ratingService.GetAverageRating(serviceProviderId);
-
-            if(value >= 0)
+            try
             {
-                response.IsSuccess = true;
+                double value = await _ratingService.GetAverageRating(serviceProviderId);
+
+                if (value >= 0)
+                {
+                    response.IsSuccess = true;
+                    response.Result = value;
+                    response.Message = $"Average Rating is: {value}";
+
+                    // Rating Value Logs
+                    _logger.LogInformation("Average rating calculated: {value}", value);
+
+                    return Ok(response);
+                }
+
+                response.IsSuccess = false;
                 response.Result = value;
-                response.Message = $"Average Rating is :{value}";
-
-                return Ok(response);
+                response.Message = $"Average rating cannot be computed";
+                return BadRequest(response);
             }
+            catch (Exception ex)
+            {
+                //Log in case of errors
+                _logger.LogError("An error occurred while calculating the average rating: {ex.Message}" , ex.Message);
 
-            response.IsSuccess = false;
-            response.Result = value;
-            response.Message = $"Average rating can not be computed";
-            return BadRequest(response);    
-
+                //Throwing exception for carrying errors to the upper layers. 
+                throw;
+            }
         }
 
     }

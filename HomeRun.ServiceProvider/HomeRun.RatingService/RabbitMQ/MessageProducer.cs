@@ -6,27 +6,45 @@ namespace HomeRun.RatingService
 {
     public class MessageProducer : IMessageProducer
     {
-        public const string queueName = "ratings";
-        public void SendingMessage<T>(T message)
-        {
-            ConnectionFactory factory = new ConnectionFactory()
+            public const string queueName = "ratings";
+            private readonly ILogger<MessageProducer> _logger;
+
+            public MessageProducer(ILogger<MessageProducer> logger)
             {
-                HostName = "localhost",
-                UserName = "user",
-                Password = "pass",
-                VirtualHost = "/"
-            };
+                _logger = logger;
+            }
 
-            IConnection connection = factory.CreateConnection();
+            public void SendingMessage<T>(T message)
+            {
+                try
+                {
+                    ConnectionFactory factory = new ConnectionFactory()
+                    {
+                        HostName = "localhost",
+                        UserName = "user",
+                        Password = "pass",
+                        VirtualHost = "/"
+                    };
 
-            using IModel channel = connection.CreateModel();
+                    IConnection connection = factory.CreateConnection();
 
-            channel.QueueDeclare(queueName, durable: false, exclusive: false);
+                    using IModel channel = connection.CreateModel();
 
-            string jsonString = JsonSerializer.Serialize(message);
-            byte[] body = Encoding.UTF8.GetBytes(jsonString);
+                    channel.QueueDeclare(queueName, durable: false, exclusive: false);
 
-            channel.BasicPublish(exchange: "", routingKey: queueName, body: body);
-        }
+                    string jsonString = JsonSerializer.Serialize(message);
+                    byte[] body = Encoding.UTF8.GetBytes(jsonString);
+
+                    channel.BasicPublish(exchange: "", routingKey: queueName, body: body);
+
+                    _logger.LogInformation("Message sent to the queue successfully: {@message}", message);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "An error occurred while sending the message to the queue: {@message}", message);
+                    throw;
+                }
+            }
+        
     }
 }

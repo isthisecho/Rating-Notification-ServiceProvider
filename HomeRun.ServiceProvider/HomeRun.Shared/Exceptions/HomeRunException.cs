@@ -8,9 +8,8 @@ namespace HomeRun.Shared.Exceptions
 {
     public class HomeRunException : Exception
     {
-        public HomeRunException(string message) : base(message)
-        {
-
-        }
+        public HomeRunException() { }
+        public HomeRunException(string message) : base(message) { }
+        public HomeRunException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

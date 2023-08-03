@@ -1,9 +1,8 @@
 ﻿using HomeRun.Shared;
-using System.ComponentModel.DataAnnotations;
 
 namespace HomeRun.NotificationService
 {
-    public class Notification :BaseEntity
+    public class Notification : BaseEntity
     {
 
         public string    RatingId               { get; set; } = string.Empty;

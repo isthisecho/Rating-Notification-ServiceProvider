@@ -16,13 +16,22 @@ namespace HomeRun.NotificationService
             _notificationService = notificationService;
         }
 
-
         [HttpGet("GetNotifications", Name = "GetNewNotifications")]
-        public  IActionResult GetNewNotifications(int serviceProviderId)
+        public IActionResult GetNewNotifications()
         {
-            IEnumerable<Notification> x = _notificationService.GetAllNewNotifications();
-            return Ok(x);
-        }
+            try
+            {
+                IEnumerable<Notification> notifications = _notificationService.GetAllNewNotifications();
 
+                _logger.LogInformation("New notifications retrieved successfully {@notifications}", notifications);
+
+                return Ok(notifications);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting new notifications");
+                return StatusCode(500, "An error occurred while processing the request.");
+            }
+        }
     }
 }

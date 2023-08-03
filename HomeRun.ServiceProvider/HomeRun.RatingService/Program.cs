@@ -1,11 +1,12 @@
 using HomeRun.RatingService;
+using HomeRun.RatingService.Middleware;
 using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 
 
-builder.Host.UseSerilog((context,configuration) =>  { configuration.ReadFrom.Configuration(context.Configuration); });
+builder.Host.UseSerilog((context,configuration) =>  { configuration.ReadFrom.Configuration(context.Configuration); }); //Adding Serilog
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -30,6 +31,9 @@ if (app.Environment.IsDevelopment())
 
 //app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
+
+app.UseSerilogRequestLogging(); //Adding Request Logging
+app.UseMiddleware<ExceptionHandlerMiddleware>(); // Adding Middlewares
 
 app.UseAuthorization();
 

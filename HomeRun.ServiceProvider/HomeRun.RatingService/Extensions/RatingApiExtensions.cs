@@ -36,16 +36,6 @@ namespace HomeRun.RatingService
         }
 
 
-        public static void AddCustomLogger(this ILoggingBuilder logging, IConfiguration configuration)
-        {
-           Logger logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
-
-           logging.ClearProviders();
-           logging.AddSerilog(logger);
-        }
-
-
-
     }
 
 

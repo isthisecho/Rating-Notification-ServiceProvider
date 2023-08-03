@@ -4,23 +4,24 @@ namespace HomeRun.NotificationService
     public class NotificationService : INotificationService
     {
         private readonly List<Notification> _notifications = new();
-        private readonly ILogger _logger;
-        public NotificationService(ILogger logger)
+        private readonly ILogger<NotificationService> _logger;
+
+        public NotificationService(ILogger<NotificationService> logger)
         {
             _logger = logger;
         }
-
-        public  IEnumerable<Notification> GetAllNewNotifications()
+        public IEnumerable<Notification> GetAllNewNotifications()
         {
-            List<Notification> notificationsToReturn = new(_notifications);
-            _notifications.Clear(); 
+                List<Notification> notificationsToReturn = new(_notifications);
+                _notifications.Clear();
 
-            return notificationsToReturn;
+                return notificationsToReturn;
         }
 
         public void AddNotification(Notification notification)
         {
-            _notifications.Add(notification);
+                _notifications.Add(notification);
+
         }
     }
 }

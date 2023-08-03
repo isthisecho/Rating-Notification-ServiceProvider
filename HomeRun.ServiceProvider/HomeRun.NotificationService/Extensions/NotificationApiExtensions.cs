@@ -7,9 +7,9 @@ namespace HomeRun.NotificationService
 
         public static void AddContexts(this IServiceCollection services)
         {
-            services.AddHostedService<NotificationProccessor>();
             services.AddSingleton<IHostedService, NotificationProccessor>();
             services.AddSingleton<INotificationService, NotificationService>();
+            services.AddHostedService<NotificationProccessor>();
         }
     }
 }
