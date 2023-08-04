@@ -1,4 +1,6 @@
 ﻿using HomeRun.Shared;
+using Microsoft.AspNetCore.Connections;
+using RabbitMQ.Client;
 
 namespace HomeRun.NotificationService
 {
@@ -7,7 +9,6 @@ namespace HomeRun.NotificationService
 
         public static void AddContexts(this IServiceCollection services)
         {
-            services.AddSingleton<IHostedService, NotificationProccessor>();
             services.AddSingleton<INotificationService, NotificationService>();
             services.AddHostedService<NotificationProccessor>();
         }

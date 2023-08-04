@@ -21,7 +21,7 @@ namespace HomeRun.RatingService
 
         public static void AddContexts(this IServiceCollection services , IConfiguration configuration)
         {
-            services.AddDbContext<RatingDbContext>(context => context.UseNpgsql(configuration.GetConnectionString("WebApiConnection")));
+            services.AddDbContext<RatingDbContext>(context => context.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING")));
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped<DbContext, RatingDbContext>();
             services.AddScoped<IRatingService, RatingService>();

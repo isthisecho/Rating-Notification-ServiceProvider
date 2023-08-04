@@ -1,12 +1,69 @@
-version: '3.8'
+version: '2.4'
+networks:
+  backend:
+    driver: bridge
+
+
+
 services:
   rabbitmq:
-    container_name: "rabbitmq"
-    image: rabbitmq:management
-    environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=pass
+    image: "rabbitmq:management"
     ports:
-      - '5672:5672'
-      - '15672:15672'
-    
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping # Other services depends on rabbitmq but still needs healtcheck to runs properly.
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    environment: &rabbitmqValues # Identifying Common rabbitmq values at once and sending the reference to where we need it.
+     RABBITMQ_DEFAULT_HOST: "rabbitmq"
+     RABBITMQ_DEFAULT_USER: "user"
+     RABBITMQ_DEFAULT_PASS: "pass"
+    networks:
+      - backend
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  homerun.ratingservice:
+    image: ${DOCKER_REGISTRY-}homerunratingservice
+    build:
+      context: .
+      dockerfile: HomeRun.RatingService/Dockerfile
+    environment:
+      <<: *rabbitmqValues  # Using Common Values
+      CONNECTION_STRING: "User ID=postgres;Password=1234;Server=postgres;Port=5432;Database=RatingDB;"
+    networks:
+      - backend
+    depends_on:
+      - postgres
+
+  homerun.notificationservice:
+    image: ${DOCKER_REGISTRY-}homerunnotificationservice
+    build:
+      context: .
+      dockerfile: HomeRun.NotificationService/Dockerfile
+    restart: on-failure
+    environment:
+      <<: *rabbitmqValues  # Using Common Values
+    networks:
+      - backend
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    links:
+      - rabbitmq
+
+  postgres:
+    image: "postgres:latest"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB:       "RatingDB"
+      POSTGRES_USER:     "postgres"
+      POSTGRES_PASSWORD: "1234"
+    networks:
+      - backend
+
+volumes:
+  rabbitmq_data:
