@@ -20,80 +20,34 @@ namespace HomeRun.RatingService
         }
 
 
-        [HttpPost("SubmitRating", Name = "SubmitRating")]
+        [HttpPost(Name = "SubmitRating")]
         public async Task<IActionResult> SubmitRating(RatingDTO rating)
         {
-            CommonResponse response = new CommonResponse();
-
-            try
+            if (ModelState.IsValid)
             {
-                Rating? _rating = await _ratingService.SubmitRating(rating);
+                Rating _rating = await _ratingService.SubmitRating(rating);
+                CommonResponse response = new() { IsSuccess = true, Message = "Rating created successfully", Result = _rating };
 
-                if (_rating is not null)
-                {
-                    response.IsSuccess = true;
-                    response.Result = _rating;
-                    response.Message = "Rating created successfully";
+                _logger.LogInformation("Rating created successfully: {@_rating}", _rating); // Rating Value logs.  
 
-                    // Rating Value logs.
-                    _logger.LogInformation("Rating created successfully: {@_rating}", _rating);
+                _messageProducer.SendingMessage(_rating);                                   // Send rating to MQ.
 
-                    // Send rating to MQ.
-                    _messageProducer.SendingMessage(_rating);
-
-                    return Ok(response);
-                }
-
-                response.IsSuccess = false;
-                response.Result = _rating;
-                response.Message = $"Rating could not be added";
-
-                return BadRequest(response);
+                return Ok(response);
             }
-            catch (Exception ex)
-            {
-                //Log in case of errors
-                _logger.LogError("An error occurred while submitting the rating: {ex}", ex);
 
-                //Throwing exception for carrying errors to the upper layers. 
-                throw;
-            }
+            return BadRequest("sa");
         }
 
-        [HttpGet("GetAvgRating", Name = "GetAverageRating")]
-        public async Task<IActionResult> GetAverageRating(int serviceProviderId)
+        [HttpGet("GetAvg/{id}", Name = "GetAverageRating")]
+        public async Task<IActionResult> GetAverageRating(int id)
         {
-            CommonResponse response = new CommonResponse();
+            double value = await _ratingService.GetAverageRating(id);
+            CommonResponse response = new CommonResponse() { IsSuccess = true  , Result =value , Message = $"Average Rating is: {value}" };
 
-            try
-            {
-                double value = await _ratingService.GetAverageRating(serviceProviderId);
+            // Rating Value Logs
+            _logger.LogInformation("Average rating calculated: {value}", value);
 
-                if (value >= 0)
-                {
-                    response.IsSuccess = true;
-                    response.Result = value;
-                    response.Message = $"Average Rating is: {value}";
-
-                    // Rating Value Logs
-                    _logger.LogInformation("Average rating calculated: {value}", value);
-
-                    return Ok(response);
-                }
-
-                response.IsSuccess = false;
-                response.Result = value;
-                response.Message = $"Average rating cannot be computed";
-                return BadRequest(response);
-            }
-            catch (Exception ex)
-            {
-                //Log in case of errors
-                _logger.LogError("An error occurred while calculating the average rating: {ex.Message}" , ex.Message);
-
-                //Throwing exception for carrying errors to the upper layers. 
-                throw;
-            }
+            return Ok(response);
         }
 
     }

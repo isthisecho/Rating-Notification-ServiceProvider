@@ -8,14 +8,17 @@ namespace HomeRun.RatingService
 {
     public class RatingService : IRatingService
     {
-        private readonly  IRepository<Rating> _ratingRepository;
-        private readonly IMapper _mapper;
-        private readonly ILogger _logger;
-        public RatingService(IRepository<Rating> ratingRepository, IMapper mapper, ILogger<Rating> logger)
+        private readonly  IRepository<ServiceProvider>  _serviceProviderRepository;
+        private readonly  IRepository<Rating>           _ratingRepository         ;
+        private readonly  IMapper                       _mapper                   ;
+        private readonly  ILogger<RatingService>        _logger                   ;
+
+        public RatingService(IRepository<Rating> ratingRepository, IMapper mapper, ILogger<RatingService> logger, IRepository<ServiceProvider> serviceProviderRepository)
         {
             _ratingRepository = ratingRepository;
             _mapper = mapper;
             _logger = logger;
+            _serviceProviderRepository = serviceProviderRepository;
         }
 
         public async Task<double> GetAverageRating(int serviceProviderId)
@@ -47,11 +50,22 @@ namespace HomeRun.RatingService
         {
             try
             {
+                ServiceProvider? provider = await _serviceProviderRepository.GetById(rating.ServiceProviderId);
+
+                if (provider is null)
+                    throw new HomeRunException("No Service Provider exists with specified id.");
+
+                else if (!(0 <= rating.RatingValue && rating.RatingValue <= 5))
+                    throw new HomeRunException("Rating Value must be between 0-5");
+
                 Rating ratingObj = _mapper.Map<Rating>(rating);
                 Rating? newRating = await _ratingRepository.Create(ratingObj);
 
+                if (newRating == null)
+                    throw new ArgumentNullException();
 
-                return newRating!;
+
+                return newRating;
             }
             catch (Exception ex)
             {

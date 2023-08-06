@@ -27,6 +27,8 @@ services:
 
   homerun.ratingservice:
     image: ${DOCKER_REGISTRY-}homerunratingservice
+    ports:
+      - "7101:443"
     build:
       context: .
       dockerfile: HomeRun.RatingService/Dockerfile
@@ -40,6 +42,8 @@ services:
 
   homerun.notificationservice:
     image: ${DOCKER_REGISTRY-}homerunnotificationservice
+    ports:
+      - "7105:443"
     build:
       context: .
       dockerfile: HomeRun.NotificationService/Dockerfile

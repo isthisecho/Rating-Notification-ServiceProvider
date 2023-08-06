@@ -10,18 +10,16 @@ namespace HomeRun.NotificationService
         {
             _logger = logger;
         }
-        public IEnumerable<Notification> GetAllNewNotifications()
+        public IEnumerable<Notification> GetAllNewNotifications(int serviceProivderId)
         {
-                List<Notification> notificationsToReturn = new(_notifications);
-                _notifications.Clear();
-
-                return notificationsToReturn;
+            List<Notification> notificationsToReturn = _notifications.Where(x => x.ServiceProviderId == serviceProivderId).ToList();
+            _notifications.RemoveAll(x => x.ServiceProviderId == serviceProivderId);
+            return notificationsToReturn;
         }
 
         public void AddNotification(Notification notification)
         {
                 _notifications.Add(notification);
-
         }
     }
 }

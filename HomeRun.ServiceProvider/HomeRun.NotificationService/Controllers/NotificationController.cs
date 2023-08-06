@@ -16,14 +16,14 @@ namespace HomeRun.NotificationService
             _notificationService = notificationService;
         }
 
-        [HttpGet("GetNotifications", Name = "GetNewNotifications")]
-        public IActionResult GetNewNotifications()
+        [HttpGet("{id}", Name = "GetNewNotifications")]
+        public IActionResult GetNewNotifications(int id)
         {
             try
             {
-                IEnumerable<Notification> notifications = _notificationService.GetAllNewNotifications();
+                IEnumerable<Notification> notifications = _notificationService.GetAllNewNotifications(id);
 
-                _logger.LogInformation("New notifications retrieved successfully {@notifications}", notifications);
+                _logger.LogInformation("New notifications retrieved successfully for ServiceProvider Id {id}  : \r\n {@notifications}",id, notifications);
 
                 return Ok(notifications);
             }

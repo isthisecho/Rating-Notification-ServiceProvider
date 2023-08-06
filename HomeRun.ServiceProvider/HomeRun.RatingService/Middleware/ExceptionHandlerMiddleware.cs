@@ -23,14 +23,14 @@ namespace HomeRun.RatingService.Middleware
             catch (Exception ex)
             {
                 _logger.LogError("Something Went Wrong  ==> {ex}",ex);
-
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError; 
+               
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest; 
                 ProblemDetails problem = new()
                     {
-                        Status = (int)HttpStatusCode.InternalServerError,
-                        Type = "Server Error",
-                        Title = "Server Error",
-                        Detail = "An internal server error has occured."
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Type = "Bad Request",
+                        Title = "Error Has Occured",
+                        Detail = ex.Message ?? "Error Has Occured"
                     };
 
                 string json = JsonSerializer.Serialize(problem);

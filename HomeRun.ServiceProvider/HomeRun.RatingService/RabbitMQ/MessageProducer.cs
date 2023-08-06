@@ -20,9 +20,9 @@ namespace HomeRun.RatingService
                 {
                     ConnectionFactory factory = new ConnectionFactory()
                     {
-                        HostName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_HOST"),
-                        UserName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER"),
-                        Password = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS"),
+                        HostName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_HOST") ?? "localhost",  
+                        UserName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? "user",  
+                        Password = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? "pass",
                     };
 
                     IConnection connection = factory.CreateConnection();

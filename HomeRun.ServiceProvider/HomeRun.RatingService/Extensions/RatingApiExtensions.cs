@@ -15,8 +15,7 @@ namespace HomeRun.RatingService
             using IServiceScope scope       = webApplication.Services.CreateScope();
             await using RatingDbContext _db = scope.ServiceProvider.GetRequiredService<RatingDbContext>();
 
-            if (_db.Database.GetPendingMigrations().Any())
-                await _db.Database.MigrateAsync();
+            await _db.Database.GetPendingMigrationsAsync();
         }
 
         public static void AddContexts(this IServiceCollection services , IConfiguration configuration)

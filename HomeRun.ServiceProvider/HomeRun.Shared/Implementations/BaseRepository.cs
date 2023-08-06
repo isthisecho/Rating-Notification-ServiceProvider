@@ -18,7 +18,15 @@ namespace HomeRun.Shared
             _logger = logger;
         }
 
-        public async Task<EntityType?> Create(EntityType? entity)
+        public async Task<EntityType?> GetById(int id) => await _entities.FindAsync(id);
+
+        public async Task<EntityType?> Get(EntityType? entity) => await _entities.FindAsync(entity);
+
+        public async Task<IEnumerable<EntityType>> Where(Expression<Func<EntityType, bool>> predicate) => await _entities.Where(predicate).ToListAsync();
+
+        public async Task<IEnumerable<EntityType>> GetAll() => await _entities.ToListAsync();
+
+        public async Task<EntityType?> Create(EntityType? entity)        
         {
             if (entity == null)
             {
@@ -40,18 +48,17 @@ namespace HomeRun.Shared
             }
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int id)                                 
         {
             EntityType? entity = await _entities.FindAsync(id);
-
-            if (entity == null)
-            {
-                _logger.LogError("Item cannot be found and deleted. Item ID: {id}", id);
-                throw new HomeRunException("Item cannot be found and deleted.");
-            }
-
             try
             {
+                if (entity == null)
+                {
+                    _logger.LogError("Item cannot be found and deleted. Item ID: {id}", id);
+                    throw new HomeRunException("Item cannot be found and deleted.");
+                }
+
                 _entities.Remove(entity);
                 await _context.SaveChangesAsync();
 
@@ -61,34 +68,6 @@ namespace HomeRun.Shared
                 _logger.LogError(ex, "Delete operation failed for entity with ID {id}", id);
                 throw;
             }
-        }
-
-        public async Task<EntityType?> GetById(int id)
-        {
-            EntityType? values = await _entities.FindAsync(id);
-
-            if (values is not null)
-                return values;
-            else
-            {
-                _logger.LogWarning("Values is null with ID {id}", id);
-                throw new HomeRunException($"Values is null with ID: {id}");
-            }
-        }
-
-        public async Task<EntityType?> Get(EntityType? entity)
-        {
-            return await _entities.FindAsync(entity);
-        }
-
-        public async Task<IEnumerable<EntityType>> Where(Expression<Func<EntityType, bool>> predicate)
-        {
-            return await _entities.Where(predicate).ToListAsync();
-        }
-
-        public async Task<IEnumerable<EntityType>> GetAll()
-        {
-            return await _entities.ToListAsync();
         }
 
         public async Task<EntityType?> Update(int id, EntityType? entity)

@@ -10,8 +10,8 @@ namespace HomeRun.NotificationService
     {
         private readonly ILogger<NotificationProccessor> _logger;
         private readonly INotificationService _notificationService;
-        private IConnection? _connection; // Bağlantıyı global olarak tutuyoruz
-        private IModel? _channel; // Kanalı global olarak tutuyoruz
+        private IConnection? _connection; // Keep Connection Global
+        private IModel? _channel; // Keep Channel Global
         private const string queueName = "ratings";
 
         public NotificationProccessor(ILogger<NotificationProccessor> logger, INotificationService notificationService)
@@ -45,8 +45,8 @@ namespace HomeRun.NotificationService
 
                 consumer.Received += (model, eventArgs) =>
                 {
-                    var body = eventArgs.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
+                    byte[] body          = eventArgs.Body.ToArray()                            ;
+                    string message       = Encoding.UTF8.GetString(body)                       ;
                     Notification? result = JsonConvert.DeserializeObject<Notification>(message);
 
                     if (result != null)
@@ -73,8 +73,8 @@ namespace HomeRun.NotificationService
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            _channel.Close();
-            _connection.Close();
+            _channel?.Close();
+            _connection?.Close();
 
             await base.StopAsync(cancellationToken);
         }
