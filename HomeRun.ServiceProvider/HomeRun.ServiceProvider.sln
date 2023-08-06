@@ -3,9 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeRun.RatingService", "HomeRun.RatingService\HomeRun.RatingService.csproj", "{109AD640-5CF7-42CC-9998-9B4AFDE41E18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeRun.RatingService", "HomeRun.RatingService\HomeRun.RatingService.csproj", "{109AD640-5CF7-42CC-9998-9B4AFDE41E18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeRun.NotificationService", "HomeRun.NotificationService\HomeRun.NotificationService.csproj", "{D39AA97D-C675-491E-963B-3E064C71E81C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeRun.NotificationService", "HomeRun.NotificationService\HomeRun.NotificationService.csproj", "{D39AA97D-C675-491E-963B-3E064C71E81C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeRun.Shared", "HomeRun.Shared\HomeRun.Shared.csproj", "{EB4FE399-78D0-4A2A-BF96-D49EC67D7240}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{1168057A-36C1-4C94-A8A7-119404704569}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeRun.RatingService.Tests", "..\HomeRun.RatingService.Tests\HomeRun.RatingService.Tests.csproj", "{0EBB83E2-1720-43D6-8AC8-336D1FE27080}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeRun.NotificationService.Tests", "..\HomeRun.NotificationService.Tests\HomeRun.NotificationService.Tests.csproj", "{A8B1D5C0-4EB1-4D4E-9F3C-5D7B18F3539F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E74B9D47-C0D6-4CBE-B2C8-11D51E28C786}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +31,29 @@ Global
 		{D39AA97D-C675-491E-963B-3E064C71E81C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D39AA97D-C675-491E-963B-3E064C71E81C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D39AA97D-C675-491E-963B-3E064C71E81C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB4FE399-78D0-4A2A-BF96-D49EC67D7240}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB4FE399-78D0-4A2A-BF96-D49EC67D7240}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB4FE399-78D0-4A2A-BF96-D49EC67D7240}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB4FE399-78D0-4A2A-BF96-D49EC67D7240}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1168057A-36C1-4C94-A8A7-119404704569}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1168057A-36C1-4C94-A8A7-119404704569}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1168057A-36C1-4C94-A8A7-119404704569}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1168057A-36C1-4C94-A8A7-119404704569}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EBB83E2-1720-43D6-8AC8-336D1FE27080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EBB83E2-1720-43D6-8AC8-336D1FE27080}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EBB83E2-1720-43D6-8AC8-336D1FE27080}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EBB83E2-1720-43D6-8AC8-336D1FE27080}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8B1D5C0-4EB1-4D4E-9F3C-5D7B18F3539F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8B1D5C0-4EB1-4D4E-9F3C-5D7B18F3539F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8B1D5C0-4EB1-4D4E-9F3C-5D7B18F3539F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8B1D5C0-4EB1-4D4E-9F3C-5D7B18F3539F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0EBB83E2-1720-43D6-8AC8-336D1FE27080} = {E74B9D47-C0D6-4CBE-B2C8-11D51E28C786}
+		{A8B1D5C0-4EB1-4D4E-9F3C-5D7B18F3539F} = {E74B9D47-C0D6-4CBE-B2C8-11D51E28C786}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5582553A-DDD0-4699-8BEC-1756D12168D3}

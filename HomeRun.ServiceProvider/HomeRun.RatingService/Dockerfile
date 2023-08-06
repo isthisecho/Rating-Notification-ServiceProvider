@@ -19,4 +19,4 @@ RUN dotnet publish "HomeRun.RatingService.csproj" -c Release -o /app/publish /p:
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "HomeRun.RatingService.dll"]
+ENTRYPOINT ["dotnet", "HomeRun.RatingService.dll"]	

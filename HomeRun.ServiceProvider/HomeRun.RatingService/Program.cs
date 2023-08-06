@@ -1,25 +1,50 @@
-var builder = WebApplication.CreateBuilder(args);
+using HomeRun.RatingService;
+using HomeRun.RatingService.Middleware;
+using HomeRun.Shared;
+using Serilog;
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+ namespace HomeRun.RatingService
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public class Program
+    {
+        private static void Main(string[] args)
+        {
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+            builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); }); //Adding Serilog
+
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+
+            builder.Services.AddContexts(builder.Configuration);    // Extension method for wrapping all relevant DI's.
+            builder.Services.AddAutoMapper();                       // Extension method for wrapping AutoMapper configuration.
+
+
+            WebApplication app = builder.Build();
+
+
+            app.ApplyPendingMigrations(builder.Services);           // Extension method for DB Migration.
+
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseSerilogRequestLogging();                         //Adding Request Logging
+            app.UseMiddleware<ExceptionHandlerMiddleware>();        // Adding Middlewares
+
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            app.Run();
+        }
+    }
+
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
