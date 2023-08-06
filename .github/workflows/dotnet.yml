@@ -5,9 +5,9 @@ name: .NET
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "dev" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -21,8 +21,10 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore HomeRun.ServiceProvider/HomeRun.ServiceProvider.sln
+
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build HomeRun.ServiceProvider/HomeRun.ServiceProvider.sln
+
     - name: Test
-      run: dotnet test ../../.././HomeRun.ServiceProvider.sln
+      run: dotnet test HomeRun.ServiceProvider/HomeRun.ServiceProvider.sln
