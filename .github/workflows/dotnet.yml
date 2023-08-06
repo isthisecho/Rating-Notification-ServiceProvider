@@ -21,10 +21,10 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore ../../.././HomeRun.ServiceProvider.sln
+      run: dotnet restore HomeRun.ServiceProvider/HomeRun.ServiceProvider.sln
 
     - name: Build
-      run: dotnet build ../../.././HomeRun.ServiceProvider.sln
+      run: dotnet build HomeRun.ServiceProvider/HomeRun.ServiceProvider.sln
 
     - name: Test
-      run: dotnet test ../../.././HomeRun.ServiceProvider.sln
+      run: dotnet test HomeRun.ServiceProvider/HomeRun.ServiceProvider.sln
