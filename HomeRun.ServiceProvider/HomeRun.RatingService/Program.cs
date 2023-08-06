@@ -1,6 +1,8 @@
+using AspNetCoreRateLimit;
 using HomeRun.RatingService;
 using HomeRun.RatingService.Middleware;
 using HomeRun.Shared;
+using Microsoft.AspNetCore.RateLimiting;
 using Serilog;
 
  namespace HomeRun.RatingService
@@ -17,13 +19,12 @@ using Serilog;
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-
-            builder.Services.AddContexts(builder.Configuration);    // Extension method for wrapping all relevant DI's.
-            builder.Services.AddAutoMapper();                       // Extension method for wrapping AutoMapper configuration.
+            builder.Services.AddCustomRateLimiter();   // Extension method for Custom Rate Limiter
+            builder.Services.AddContexts();                                 // Extension method for wrapping all relevant DI's.
+            builder.Services.AddAutoMapper();                               // Extension method for wrapping AutoMapper configuration.
 
 
             WebApplication app = builder.Build();
-
 
             app.ApplyPendingMigrations(builder.Services);           // Extension method for DB Migration.
 
@@ -35,6 +36,7 @@ using Serilog;
             }
 
             app.UseHttpsRedirection();
+            app.UseRateLimiter();
 
             app.UseSerilogRequestLogging();                         //Adding Request Logging
             app.UseMiddleware<ExceptionHandlerMiddleware>();        // Adding Middlewares

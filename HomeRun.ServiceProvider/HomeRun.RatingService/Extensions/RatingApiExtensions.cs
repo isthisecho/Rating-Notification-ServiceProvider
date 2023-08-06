@@ -1,10 +1,14 @@
-﻿using AutoMapper;
+﻿using AspNetCoreRateLimit;
+using AutoMapper;
 using HomeRun.RatingService.Mapper;
 using HomeRun.Shared;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Core;
-
+using System.Threading.RateLimiting;
 
 namespace HomeRun.RatingService
 {
@@ -15,10 +19,10 @@ namespace HomeRun.RatingService
             using IServiceScope scope       = webApplication.Services.CreateScope();
             await using RatingDbContext _db = scope.ServiceProvider.GetRequiredService<RatingDbContext>();
 
-            await _db.Database.GetPendingMigrationsAsync();
+            await _db.Database.MigrateAsync();
         }
 
-        public static void AddContexts(this IServiceCollection services , IConfiguration configuration)
+        public static void AddContexts(this IServiceCollection services )
         {
             services.AddDbContext<RatingDbContext>(context => context.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING")));
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
@@ -32,6 +36,23 @@ namespace HomeRun.RatingService
             IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
             services.AddSingleton(mapper);
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        }
+
+        public static void AddCustomRateLimiter(this IServiceCollection services)
+        {
+
+         services.AddRateLimiter(rateLimiterOptions =>
+         {
+             rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                rateLimiterOptions.AddFixedWindowLimiter("fixed", options =>
+                {
+                    options.PermitLimit = 10;
+                    options.Window = TimeSpan.FromSeconds(10);
+                    options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    options.QueueLimit = 5;
+                });
+            });
         }
 
 

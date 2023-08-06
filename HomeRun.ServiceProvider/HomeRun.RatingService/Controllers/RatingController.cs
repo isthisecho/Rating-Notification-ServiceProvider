@@ -1,10 +1,12 @@
 ﻿using HomeRun.RatingService.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace HomeRun.RatingService
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableRateLimiting("fixed")]
     public class RatingController : ControllerBase
     {
 

@@ -34,7 +34,7 @@ services:
       dockerfile: HomeRun.RatingService/Dockerfile
     environment:
       <<: *rabbitmqValues  # Using Common Values
-      CONNECTION_STRING: "User ID=postgres;Password=1234;Server=postgres;Port=5432;Database=RatingDB;"
+      CONNECTION_STRING: "UserID=postgres;Password=1234;Server=postgres;Port=5432;Database=RatingDB;"
     networks:
       - backend
     depends_on:

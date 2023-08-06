@@ -5,18 +5,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeRun.RatingService.Tests.Integration
+namespace HomeRun.Shared.Helpers
 {
-    internal class HttpHelper
+    public class HttpHelper
     {
         public static StringContent GetJsonHttpContent(object items)
         {
             return new StringContent(JsonConvert.SerializeObject(items), Encoding.UTF8, "application/json");
         }
 
-        internal static class Urls
+        public static class Urls
         {
             public readonly static string SubmitRating = "/Rating";
+            public readonly static string GetNewNotifications = "/Notification/";
+
         }
     }
 }

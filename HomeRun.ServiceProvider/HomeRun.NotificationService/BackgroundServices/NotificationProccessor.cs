@@ -13,7 +13,7 @@ namespace HomeRun.NotificationService
         private IConnection? _connection; // Keep Connection Global
         private IModel? _channel; // Keep Channel Global
         private const string queueName = "ratings";
-
+        private EventingBasicConsumer? consumer;
         public NotificationProccessor(ILogger<NotificationProccessor> logger, INotificationService notificationService)
         {
             _logger = logger;
@@ -24,9 +24,9 @@ namespace HomeRun.NotificationService
             {
                 ConnectionFactory factory = new ConnectionFactory()
                 {
-                    HostName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_HOST"),
-                    UserName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER"),
-                    Password = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS"),
+                    HostName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_HOST") ?? "localhost",  // if null use default values
+                    UserName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? "user",       // if null use default values
+                    Password = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? "pass",       // if null use default values
                 };
 
                 _connection = factory.CreateConnection();
@@ -41,10 +41,10 @@ namespace HomeRun.NotificationService
             {
                 InitializeRabbitMQ();
 
-                EventingBasicConsumer consumer = new EventingBasicConsumer(_channel);
+                consumer = new EventingBasicConsumer(_channel);
 
                 consumer.Received += (model, eventArgs) =>
-                {
+                { 
                     byte[] body          = eventArgs.Body.ToArray()                            ;
                     string message       = Encoding.UTF8.GetString(body)                       ;
                     Notification? result = JsonConvert.DeserializeObject<Notification>(message);
@@ -73,9 +73,6 @@ namespace HomeRun.NotificationService
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            _channel?.Close();
-            _connection?.Close();
-
             await base.StopAsync(cancellationToken);
         }
     }

@@ -1,20 +1,11 @@
-﻿using Docker.DotNet.Models;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
-using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Networks;
 
 namespace HomeRun.RatingService.Tests.Integration
 {
@@ -46,6 +37,7 @@ namespace HomeRun.RatingService.Tests.Integration
         {
 
             string connectionString = _dbContainer.GetConnectionString();
+
             base.ConfigureWebHost(builder);
 
             builder.ConfigureTestServices(services =>
@@ -58,6 +50,8 @@ namespace HomeRun.RatingService.Tests.Integration
                 {
                     options.UseNpgsql(connectionString);
                 });
+
+
             }
 
 
@@ -67,7 +61,6 @@ namespace HomeRun.RatingService.Tests.Integration
         {
             await _dbContainer.StartAsync();
             await _rabbitMqContainer.StartAsync();
-
             using (var scope = Services.CreateScope())
             {
                 var scopedServices = scope.ServiceProvider;
@@ -81,6 +74,7 @@ namespace HomeRun.RatingService.Tests.Integration
         async Task IAsyncLifetime.DisposeAsync()
         {
             await _rabbitMqContainer.StopAsync();
+            await _rabbitMqContainer.DisposeAsync();
             await _dbContainer.StopAsync();
         }
     }
