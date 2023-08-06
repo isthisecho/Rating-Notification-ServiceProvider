@@ -55,6 +55,9 @@ namespace HomeRun.NotificationService
                     _logger.LogInformation("Product message received: {@message}", message);
                 };
 
+                // Auto Acknowledge is true but we might change it to false and when endpoint called we can
+                // acknowledge that we consumed message.
+
                 _channel.BasicConsume(queueName, true, consumer);
 
                 _logger.LogInformation("Notification Service is working.");

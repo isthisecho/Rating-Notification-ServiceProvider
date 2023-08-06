@@ -13,12 +13,15 @@ namespace HomeRun.RatingService
         private readonly  IMapper                       _mapper                   ;
         private readonly  ILogger<RatingService>        _logger                   ;
 
+
+
         public RatingService(IRepository<Rating> ratingRepository, IMapper mapper, ILogger<RatingService> logger, IRepository<ServiceProvider> serviceProviderRepository)
         {
-            _ratingRepository = ratingRepository;
-            _mapper = mapper;
-            _logger = logger;
-            _serviceProviderRepository = serviceProviderRepository;
+            _serviceProviderRepository = serviceProviderRepository  ;
+            _ratingRepository          = ratingRepository           ;
+            _mapper                    = mapper                     ;
+            _logger                    = logger                     ;
+
         }
 
         public async Task<double> GetAverageRating(int serviceProviderId)

@@ -7,15 +7,15 @@ namespace HomeRun.Shared
 {
     public class BaseRepository<EntityType> : IRepository<EntityType> where EntityType : class
     {
-        private readonly DbContext _context;
-        private readonly DbSet<EntityType> _entities;
-        private readonly ILogger<BaseRepository<EntityType>> _logger;
+        private readonly DbContext                            _context  ;
+        private readonly DbSet<EntityType>                    _entities ;
+        private readonly ILogger<BaseRepository<EntityType>>  _logger   ;
 
         public BaseRepository(DbContext context, ILogger<BaseRepository<EntityType>> logger)
         {
-            _context = context;
-            _entities = context.Set<EntityType>();
-            _logger = logger;
+            _context    = context                   ;
+            _entities   = context.Set<EntityType>() ;
+            _logger     = logger                    ;
         }
 
         public async Task<EntityType?> GetById(int id) => await _entities.FindAsync(id);

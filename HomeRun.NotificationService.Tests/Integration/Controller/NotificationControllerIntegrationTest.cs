@@ -9,12 +9,12 @@ using FluentAssertions;
 namespace HomeRun.NotificationService.Tests.Integration
 {
 
-    public  class RabbitMqContainerTest  : IClassFixture<NotificationApiFactory> //,IDisposable
+    public  class NotificationControllerIntegrationTest  : IClassFixture<NotificationApiFactory> //,IDisposable
     {
         private readonly NotificationApiFactory _factory;
         private readonly HttpClient _client;
         private readonly Notification _notification = new Notification() { Id = 1, RatingId = 1, RatingValue = 2, ServiceProviderId = 1 ,CreatedAt=DateTime.UtcNow};
-        public RabbitMqContainerTest(NotificationApiFactory factory)
+        public NotificationControllerIntegrationTest(NotificationApiFactory factory)
         {
             _factory = factory;
             _client = factory.CreateClient();

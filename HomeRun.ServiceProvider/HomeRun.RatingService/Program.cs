@@ -19,14 +19,14 @@ using Serilog;
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddCustomRateLimiter();   // Extension method for Custom Rate Limiter
+            builder.Services.AddCustomRateLimiter();                        // Extension method for Custom Rate Limiter
             builder.Services.AddContexts();                                 // Extension method for wrapping all relevant DI's.
             builder.Services.AddAutoMapper();                               // Extension method for wrapping AutoMapper configuration.
 
 
             WebApplication app = builder.Build();
 
-            app.ApplyPendingMigrations(builder.Services);           // Extension method for DB Migration.
+            app.ApplyPendingMigrations(builder.Services);                   // Extension method for DB Migration.
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -38,8 +38,8 @@ using Serilog;
             app.UseHttpsRedirection();
             app.UseRateLimiter();
 
-            app.UseSerilogRequestLogging();                         //Adding Request Logging
-            app.UseMiddleware<ExceptionHandlerMiddleware>();        // Adding Middlewares
+            app.UseSerilogRequestLogging();                                 // Adding Request Logging
+            app.UseMiddleware<ExceptionHandlerMiddleware>();                // Adding Middlewares
 
             app.UseAuthorization();
 

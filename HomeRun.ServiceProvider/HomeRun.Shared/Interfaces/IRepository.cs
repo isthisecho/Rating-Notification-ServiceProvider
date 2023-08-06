@@ -16,14 +16,14 @@ namespace HomeRun.Shared
 
     public interface IRepository<EntityType> where EntityType : class
     {
-        Task    <IEnumerable<EntityType>>   GetAll                                              ();
-        Task    <EntityType?>               GetById         (int id                              );
-        Task    <EntityType?>               Get             (EntityType? entity                  );
+        Task    <IEnumerable<EntityType>>   GetAll                                                         ();
+        Task    <EntityType?>               GetById         (int id                                         );
+        Task    <EntityType?>               Get             (EntityType? entity                             );
 
-        Task    <EntityType?>               Create          (EntityType? entity                  );
-        Task    <IEnumerable<EntityType>>   Where(Expression<Func<EntityType, bool>> predicate   );
-        Task    <EntityType?>               Update          (int id, EntityType? entity          );
-        Task                                Delete          (int id                              );
+        Task    <EntityType?>               Create          (EntityType? entity                             );
+        Task    <IEnumerable<EntityType>>   Where           (Expression<Func<EntityType, bool>> predicate   );
+        Task    <EntityType?>               Update          (int id, EntityType? entity                     );
+        Task                                Delete          (int id                                         );
 
     }
 }

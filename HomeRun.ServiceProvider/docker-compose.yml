@@ -22,13 +22,13 @@ services:
      RABBITMQ_DEFAULT_PASS: "pass"
     networks:
       - backend
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+
 
   homerun.ratingservice:
     image: ${DOCKER_REGISTRY-}homerunratingservice
     ports:
-      - "7101:443"
+      - "5000:80"
+      - "5001:443"
     build:
       context: .
       dockerfile: HomeRun.RatingService/Dockerfile
@@ -43,7 +43,8 @@ services:
   homerun.notificationservice:
     image: ${DOCKER_REGISTRY-}homerunnotificationservice
     ports:
-      - "7105:443"
+      - "7000:80"
+      - "7001:443"
     build:
       context: .
       dockerfile: HomeRun.NotificationService/Dockerfile
@@ -60,6 +61,7 @@ services:
 
   postgres:
     image: "postgres:latest"
+    command: ["postgres", "-c", "log_statement=all"]
     ports:
       - "5432:5432"
     environment:
@@ -69,5 +71,3 @@ services:
     networks:
       - backend
 
-volumes:
-  rabbitmq_data:

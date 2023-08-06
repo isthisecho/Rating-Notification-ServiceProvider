@@ -10,8 +10,10 @@ namespace HomeRun.NotificationService
         {
             _logger = logger;
         }
+
         public IEnumerable<Notification> GetAllNewNotifications(int serviceProivderId)
         {
+            //It is returning notifications related with specified serviceProviderId  and removes from the list.
             List<Notification> notificationsToReturn = _notifications.Where(x => x.ServiceProviderId == serviceProivderId).ToList();
             _notifications.RemoveAll(x => x.ServiceProviderId == serviceProivderId);
             return notificationsToReturn;

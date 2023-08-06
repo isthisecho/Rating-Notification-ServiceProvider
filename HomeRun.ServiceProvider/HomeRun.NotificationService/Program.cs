@@ -11,10 +11,7 @@ public class Program
 
         builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); }); //Adding Serilog
 
-
-
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -22,8 +19,6 @@ public class Program
         builder.Services.AddContexts(); // Extension method for wrapping all relevant DI's.
 
         WebApplication app = builder.Build();
-
-
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
