@@ -12,7 +12,7 @@ Both Services were Unit and Integration tested (TestContainers).
 
 Structured logging implemented to all services.
 
-A continuous integration made by .github/workflow. When any commits recevied from main, it will first run tests and if it failse it will notify you that your commit is not safe
+A continuous integration made by .github/workflow. 
 
 Implemented a rate-limiting mechanism.
 
