@@ -24,12 +24,12 @@ namespace HomeRun.NotificationService.Tests.UnitTests.Controllers
             var controller = new NotificationController(_logger, _notificationService);
 
             var serviceProviderId = 1;
-            var fakeNotifications = new List<Notification>
+            var fakeNotifications = new List<NotificationDTO>
             {
-                new Notification { Id = 1, RatingId =1,  ServiceProviderId= 1 ,RatingValue = 5 },
-                new Notification { Id = 2, RatingId =2,  ServiceProviderId= 1 ,RatingValue = 3 },
-                new Notification { Id = 3, RatingId =3,  ServiceProviderId= 2 ,RatingValue = 2 },
-                new Notification { Id = 4, RatingId =4,  ServiceProviderId= 2 ,RatingValue = 4 }
+                new NotificationDTO { RatingId =1,  ServiceProviderId= 1 ,RatingValue = 5 },
+                new NotificationDTO { RatingId =2,  ServiceProviderId= 1 ,RatingValue = 3 },
+                new NotificationDTO { RatingId =3,  ServiceProviderId= 2 ,RatingValue = 2 },
+                new NotificationDTO { RatingId =4,  ServiceProviderId= 2 ,RatingValue = 4 }
             };
 
             A.CallTo(() => _notificationService.GetAllNewNotifications(serviceProviderId)).Returns(fakeNotifications);

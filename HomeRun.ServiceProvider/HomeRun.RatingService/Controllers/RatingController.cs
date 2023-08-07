@@ -1,4 +1,5 @@
 ﻿using HomeRun.RatingService.Models;
+using HomeRun.RatingService.Models.DTO_s;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -32,7 +33,15 @@ namespace HomeRun.RatingService
 
                 _logger.LogInformation("Rating created successfully: {@_rating}", _rating); // Rating Value logs.  
 
-                _messageProducer.SendingMessage(_rating);                                   // Send rating to MQ.
+                NotificationDTO notification = new NotificationDTO()
+                {
+                    RatingId          = _rating.Id,
+                    RatingValue       = _rating.RatingValue,
+                    CreatedAt         = _rating.CreatedAt,
+                    ServiceProviderId = _rating.ServiceProviderId  
+                };
+
+                _messageProducer.SendingMessage(notification);                                   // Send notification to MQ.
 
                 return Ok(response);
             }

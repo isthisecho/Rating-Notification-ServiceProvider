@@ -24,12 +24,12 @@ namespace HomeRun.NotificationService.Tests.UnitTests
 
             var serviceProviderId = 2;
 
-            Notification[] notifications = new[]
+            NotificationDTO[] notifications = new[]
             {
-                new Notification { Id = 1, RatingId =1,  ServiceProviderId= 1 ,RatingValue = 5 },
-                new Notification { Id = 2, RatingId =2,  ServiceProviderId= 1 ,RatingValue = 3 },
-                new Notification { Id = 3, RatingId =3,  ServiceProviderId= 2 ,RatingValue = 2 },
-                new Notification { Id = 4, RatingId =4,  ServiceProviderId= 2 ,RatingValue = 4 }
+                new NotificationDTO { RatingId =1,  ServiceProviderId= 1 ,RatingValue = 5 },
+                new NotificationDTO { RatingId =2,  ServiceProviderId= 1 ,RatingValue = 3 },
+                new NotificationDTO { RatingId =3,  ServiceProviderId= 2 ,RatingValue = 2 },
+                new NotificationDTO { RatingId =4,  ServiceProviderId= 2 ,RatingValue = 4 }
             };
 
             foreach (var notification in notifications)
@@ -58,7 +58,7 @@ namespace HomeRun.NotificationService.Tests.UnitTests
             var serviceProviderId = 2; 
             var notifications = new[]
             {
-                new Notification { Id = 1, RatingId =1,  ServiceProviderId= 3 ,RatingValue = 5 },
+                new NotificationDTO { RatingId =1,  ServiceProviderId= 3 ,RatingValue = 5 },
             };
 
             foreach (var notification in notifications)

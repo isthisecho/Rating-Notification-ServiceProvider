@@ -21,7 +21,7 @@ namespace HomeRun.NotificationService
         {
             try
             {
-                IEnumerable<Notification> notifications = _notificationService.GetAllNewNotifications(id);
+                IEnumerable<NotificationDTO> notifications = _notificationService.GetAllNewNotifications(id);
 
                 _logger.LogInformation("New notifications retrieved successfully for ServiceProvider Id {id}  : \r\n {@notifications}",id, notifications);
 

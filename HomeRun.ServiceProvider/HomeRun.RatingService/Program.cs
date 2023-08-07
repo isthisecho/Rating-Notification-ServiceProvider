@@ -20,7 +20,9 @@ using Serilog;
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddCustomRateLimiter();                        // Extension method for Custom Rate Limiter
-            builder.Services.AddContexts();                                 // Extension method for wrapping all relevant DI's.
+
+            builder.Services.AddContexts();                                 // Extension method for wrapping all DatabaseContext DI's.
+            builder.Services.AddRabbitMQContexts();                         // Extension method for wrapping all RabbitMQ DI's.
             builder.Services.AddAutoMapper();                               // Extension method for wrapping AutoMapper configuration.
 
 

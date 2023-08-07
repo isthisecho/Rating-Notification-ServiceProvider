@@ -10,26 +10,21 @@ namespace HomeRun.NotificationService
     {
         private readonly ILogger<NotificationProccessor> _logger;
         private readonly INotificationService _notificationService;
+        private readonly IConnectionFactory _connectionFactory;
         private IConnection? _connection; // Keep Connection Global
         private IModel? _channel; // Keep Channel Global
         private const string queueName = "ratings";
         private EventingBasicConsumer? consumer;
-        public NotificationProccessor(ILogger<NotificationProccessor> logger, INotificationService notificationService)
+        public NotificationProccessor(ILogger<NotificationProccessor> logger, INotificationService notificationService, IConnectionFactory connectionFactory)
         {
-            _logger = logger;
+            _logger              = logger;
             _notificationService = notificationService;
+            _connectionFactory   = connectionFactory;
         }
 
             private void InitializeRabbitMQ()
             {
-                ConnectionFactory factory = new ConnectionFactory()
-                {
-                    HostName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_HOST") ?? "localhost",  // if null use default values
-                    UserName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? "user",       // if null use default values
-                    Password = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? "pass",       // if null use default values
-                };
-
-                _connection = factory.CreateConnection();
+                _connection = _connectionFactory.CreateConnection();
                 _channel = _connection.CreateModel();
 
                 _channel.QueueDeclare(queueName, exclusive: false, durable: false);
@@ -47,7 +42,7 @@ namespace HomeRun.NotificationService
                 { 
                     byte[] body          = eventArgs.Body.ToArray()                            ;
                     string message       = Encoding.UTF8.GetString(body)                       ;
-                    Notification? result = JsonConvert.DeserializeObject<Notification>(message);
+                    NotificationDTO? result = JsonConvert.DeserializeObject<NotificationDTO>(message);
 
                     if (result != null)
                         _notificationService.AddNotification(result);

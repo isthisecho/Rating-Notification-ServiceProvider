@@ -8,24 +8,20 @@ namespace HomeRun.RatingService
     {
             public const string queueName = "ratings";
             private readonly ILogger<MessageProducer> _logger;
+            private readonly IConnectionFactory _connectionFactory;
 
-            public MessageProducer(ILogger<MessageProducer> logger)
+            public MessageProducer(ILogger<MessageProducer> logger, IConnectionFactory connectionFactory)
             {
-                _logger = logger;
+                _logger             = logger;
+                _connectionFactory  = connectionFactory;
             }
 
             public void SendingMessage<T>(T message)
             {
                 try
                 {
-                    ConnectionFactory factory = new ConnectionFactory()
-                    {
-                        HostName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_HOST") ?? "localhost",  // if null use default values
-                        UserName = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? "user",       // if null use default values
-                        Password = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? "pass",       // if null use default values
-                    };
 
-                    IConnection connection = factory.CreateConnection();
+                    IConnection connection = _connectionFactory.CreateConnection();
 
                     using IModel channel = connection.CreateModel();
 
